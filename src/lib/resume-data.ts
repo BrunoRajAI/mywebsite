@@ -175,7 +175,7 @@ export const resumeData = {
     { value: "6+", label: "Years Experience" },
     { value: "49%", label: "Valuation Lead Increase" },
     { value: "67%", label: "AI Search Traffic Growth" },
-    { value: "68%", label: "GBP Time Reduction" },
+    { value: "68%", label: "GBP Post Time Reduction" },
     { value: "50%", label: "Operational Effort Reduced" },
     { value: "Top 3", label: "Google Keyword Rankings" },
   ],
