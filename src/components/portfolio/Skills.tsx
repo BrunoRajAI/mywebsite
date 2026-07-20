@@ -1,64 +1,205 @@
 "use client";
 
-import { motion, useInView, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { useRef, useState } from "react";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { useRef, useState, useCallback, useMemo } from "react";
 import { resumeData } from "@/lib/resume-data";
 
-const categories = [...new Set(resumeData.skills.tools.map((t) => t.category))];
-const accentColors = ["#4F8FFF", "#7C5CFC", "#00D4AA", "#FBBF24"];
-
-function SkillOrb({ name, delay }: { name: string; delay: number }) {
-  const [ripples, setRipples] = useState<number[]>([]);
-  const addRipple = () => { const id = Date.now(); setRipples((p) => [...p, id]); setTimeout(() => setRipples((p) => p.filter((r) => r !== id)), 600); };
-  return (
-    <motion.div initial={{ opacity: 0, scale: 0.6 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.4, delay, ease: [0.22, 1, 0.36, 1] }} onClick={addRipple} className="relative cursor-default">
-      <motion.div whileHover={{ y: -5, scale: 1.06, boxShadow: "0 6px 25px rgba(79,143,255,0.06)" }} whileTap={{ scale: 0.95 }} className="relative px-3.5 py-1.5 rounded-full glass border border-white/[0.04] text-white/40 hover:text-[#4F8FFF] hover:border-[#4F8FFF]/15 hover:bg-[#4F8FFF]/[0.03] transition-all duration-300 whitespace-nowrap overflow-hidden text-[13px]">
-        {name}
-        {ripples.map((r) => <motion.span key={r} initial={{ scale: 0, opacity: 0.3 }} animate={{ scale: 2.5, opacity: 0 }} transition={{ duration: 0.6 }} className="absolute inset-0 rounded-full border border-[#4F8FFF]/15" />)}
-      </motion.div>
-    </motion.div>
-  );
-}
-
-function CategoryCard({ cat, ci, tools }: { cat: string; ci: number; tools: typeof resumeData.skills.tools }) {
+/* ═══════ 3D TILT HOOK ═══════ */
+function useTilt(deg: number = 4) {
   const ref = useRef<HTMLDivElement>(null);
-  const x = useMotionValue(0); const y = useMotionValue(0);
-  const rx = useSpring(useTransform(y, [-0.5, 0.5], [4, -4]), { stiffness: 200, damping: 25 });
-  const ry = useSpring(useTransform(x, [-0.5, 0.5], [-4, 4]), { stiffness: 200, damping: 25 });
-  const color = accentColors[ci % accentColors.length];
+  const x = useMotionValue(0.5);
+  const y = useMotionValue(0.5);
+  const springX = useSpring(x, { stiffness: 300, damping: 30 });
+  const springY = useSpring(y, { stiffness: 300, damping: 30 });
+  const rotateX = useTransform(springY, [0, 1], [deg, -deg]);
+  const rotateY = useTransform(springX, [0, 1], [-deg, deg]);
+
+  const handlers = {
+    onMouseMove: (e: React.MouseEvent<HTMLDivElement>) => {
+      const rect = ref.current?.getBoundingClientRect();
+      if (!rect) return;
+      x.set((e.clientX - rect.left) / rect.width);
+      y.set((e.clientY - rect.top) / rect.height);
+    },
+    onMouseLeave: () => {
+      x.set(0.5);
+      y.set(0.5);
+    },
+  };
+
+  return { ref, style: { rotateX, rotateY }, handlers };
+}
+
+/* ═══════ RIPPLE TOOL CHIP ═══════ */
+function ToolChip({ name }: { name: string }) {
+  const [ripples, setRipples] = useState<
+    Array<{ id: number; x: number; y: number }>
+  >([]);
+
+  const handleClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const id = Date.now();
+    setRipples((prev) => [
+      ...prev,
+      { id, x: e.clientX - rect.left, y: e.clientY - rect.top },
+    ]);
+    setTimeout(
+      () => setRipples((prev) => prev.filter((r) => r.id !== id)),
+      700
+    );
+  }, []);
+
   return (
-    <motion.div ref={ref} onMouseMove={(e) => { if (!ref.current) return; const r = ref.current.getBoundingClientRect(); x.set((e.clientX - r.left) / r.width - 0.5); y.set((e.clientY - r.top) / r.height - 0.5); }} onMouseLeave={() => { x.set(0); y.set(0); }} style={{ rotateX: rx, rotateY: ry, transformStyle: "preserve-3d" }} initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-60px" }} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.15 + ci * 0.12 }} className="glass rounded-2xl p-6 md:p-8 relative overflow-hidden group hover:border-white/[0.05] transition-colors duration-500">
-      <motion.div className="absolute -top-20 -right-20 w-40 h-40 rounded-full blur-[60px] transition-opacity duration-700" style={{ background: color, opacity: 0 }} whileInView={{ opacity: 0.02 }} whileHover={{ opacity: 0.04 }} viewport={{ once: true }} />
-      <motion.div initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true }} transition={{ delay: 0.3 + ci * 0.12, duration: 0.6 }} className="absolute top-0 left-0 right-0 h-px origin-left" style={{ background: `linear-gradient(90deg, ${color}30, transparent)` }} />
-      <h3 className="text-[10px] font-mono tracking-[0.15em] text-white/25 uppercase mb-5 relative z-10">{cat}</h3>
-      <div className="flex flex-wrap gap-2 relative z-10">{tools.map((t, i) => <SkillOrb key={t.name} name={t.name} delay={0.25 + ci * 0.08 + i * 0.03} />)}</div>
+    <motion.div
+      onClick={handleClick}
+      whileHover={{
+        y: -4,
+        scale: 1.06,
+        boxShadow: "0 8px 24px rgba(99,102,241,0.12)",
+      }}
+      className="relative overflow-hidden cursor-pointer px-3.5 py-1.5 rounded-full text-xs text-white/40 glass transition-colors duration-300 hover:text-[#818CF8] hover:border-[#6366F1]/15"
+    >
+      <span className="relative z-10">{name}</span>
+      {ripples.map((r) => (
+        <span
+          key={r.id}
+          className="absolute rounded-full border border-[#6366F1]/30 pointer-events-none"
+          style={{
+            left: r.x,
+            top: r.y,
+            width: 4,
+            height: 4,
+            animation: "ripple-expand 0.7s ease-out forwards",
+          }}
+        />
+      ))}
+      <style>{`
+        @keyframes ripple-expand {
+          0% {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+          }
+          100% {
+            transform: translate(-50%, -50%) scale(40);
+            opacity: 0;
+          }
+        }
+      `}</style>
     </motion.div>
   );
 }
 
-export default function Skills() {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-80px" });
+/* ═══════ CATEGORY CARD ═══════ */
+function CategoryCard({
+  category,
+  tools,
+  index,
+}: {
+  category: string;
+  tools: string[];
+  index: number;
+}) {
+  const { ref, style, handlers } = useTilt(4);
+
   return (
-    <section id="skills" className="section-padding relative" ref={ref}>
-      <div className="absolute top-0 left-0 right-0 h-px section-sweep" style={{ background: "linear-gradient(90deg, transparent, rgba(79,143,255,0.12), transparent)" }} />
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-[#4F8FFF] opacity-[0.008] blur-[150px] pointer-events-none" />
-      <div className="max-w-6xl mx-auto px-6">
-        <motion.div initial={{ opacity: 0, y: 30 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }} className="mb-16">
-          <div className="flex items-center gap-4 mb-4"><div className="section-line" /><span className="text-[11px] font-mono tracking-[0.2em] text-white/25 uppercase">Skills</span></div>
-          <h2 className="text-3xl md:text-5xl font-bold tracking-[-0.03em] text-white">Tools & Technologies</h2>
+    <motion.div
+      ref={ref}
+      style={{
+        ...style,
+        transformStyle: "preserve-3d",
+        perspective: 800,
+      }}
+      {...handlers}
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.5, delay: index * 0.1 }}
+      className="glass rounded-2xl p-6"
+    >
+      <span className="section-label">{category}</span>
+      <div className="flex flex-wrap gap-2 mt-4">
+        {tools.map((tool) => (
+          <ToolChip key={tool} name={tool} />
+        ))}
+      </div>
+    </motion.div>
+  );
+}
+
+/* ═══════ MAIN COMPONENT ═══════ */
+export default function Skills() {
+  const categories = useMemo(() => {
+    const map = new Map<string, string[]>();
+    resumeData.skills.tools.forEach((t) => {
+      if (!map.has(t.category)) map.set(t.category, []);
+      map.get(t.category)!.push(t.name);
+    });
+    return Array.from(map.entries());
+  }, []);
+
+  return (
+    <section id="skills" className="section-pad relative overflow-hidden">
+      {/* Ambient glow */}
+      <div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] rounded-full pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(ellipse, rgba(99,102,241,0.06) 0%, transparent 70%)",
+          filter: "blur(80px)",
+        }}
+      />
+
+      <div className="max-w-6xl mx-auto px-6 relative z-10">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
+          <span className="section-label">Skills</span>
+          <div className="section-line mt-2" />
+          <h2 className="text-2xl md:text-3xl font-bold text-white mt-4">
+            Tools &amp; Technologies
+          </h2>
         </motion.div>
-        <motion.div initial={{ opacity: 0, y: 30 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.1 }} className="glass rounded-2xl p-8 md:p-10 mb-8 relative overflow-hidden">
-          <motion.div initial={{ x: "-100%" }} whileInView={{ x: "200%" }} viewport={{ once: true }} transition={{ delay: 0.5, duration: 2, ease: "linear" }} className="absolute top-0 left-0 w-1/3 h-px bg-gradient-to-r from-transparent via-[#4F8FFF]/20 to-transparent" />
-          <h3 className="text-[10px] font-mono tracking-[0.15em] text-white/25 uppercase mb-6">Core Competencies</h3>
-          <div className="flex flex-wrap gap-2.5">
-            {resumeData.skills.competencies.map((s, i) => (
-              <motion.span key={s} initial={{ opacity: 0, scale: 0.85 }} animate={isInView ? { opacity: 1, scale: 1 } : {}} transition={{ duration: 0.4, delay: 0.2 + i * 0.025 }} whileHover={{ y: -3, scale: 1.05, boxShadow: "0 4px 20px rgba(79,143,255,0.05)" }} className="px-3.5 py-1.5 rounded-full text-[13px] text-white/35 border border-white/[0.04] hover:text-[#4F8FFF] hover:bg-[#4F8FFF]/[0.03] transition-all duration-300 cursor-default">{s}</motion.span>
+
+        {/* Core Competencies */}
+        <motion.div
+          className="glass rounded-2xl p-6 mt-12"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+        >
+          <span className="section-label">Core Competencies</span>
+          <div className="flex flex-wrap gap-3 mt-4">
+            {resumeData.skills.competencies.map((comp, i) => (
+              <motion.span
+                key={comp}
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.3, delay: i * 0.03 }}
+                whileHover={{ y: -3, scale: 1.05 }}
+                className="px-4 py-2 rounded-full text-sm text-white/35 border border-white/[0.04] cursor-default transition-colors duration-300 hover:text-[#818CF8] hover:border-[#6366F1]/20 hover:bg-[#6366F1]/[0.04]"
+              >
+                {comp}
+              </motion.span>
             ))}
           </div>
         </motion.div>
-        <div className="grid md:grid-cols-2 gap-5">
-          {categories.map((cat, ci) => <CategoryCard key={cat} cat={cat} ci={ci} tools={resumeData.skills.tools.filter((t) => t.category === cat)} />)}
+
+        {/* Tools by Category */}
+        <div className="grid md:grid-cols-2 gap-6 mt-8">
+          {categories.map(([cat, tools], i) => (
+            <CategoryCard
+              key={cat}
+              category={cat}
+              tools={tools}
+              index={i}
+            />
+          ))}
         </div>
       </div>
     </section>

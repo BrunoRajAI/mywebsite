@@ -11,7 +11,7 @@ const url = "https://brunolionelraj.com";
 export const metadata: Metadata = {
   title: `${resumeData.name} — ${resumeData.title}`,
   description: resumeData.professionalSummary,
-  keywords: ["Digital Marketing Specialist", "Marketing Automation", "Local SEO", "Technical SEO", "AEO", "GEO", "n8n", "AI Automation", "Lead Generation", "Email Marketing", resumeData.name],
+  keywords: ["Digital Marketing", "Marketing Automation", "Local SEO", "Technical SEO", "AEO", "GEO", "n8n", "AI Automation", resumeData.name],
   authors: [{ name: resumeData.name }],
   creator: resumeData.name,
   metadataBase: new URL(url),
@@ -22,14 +22,13 @@ export const metadata: Metadata = {
 };
 
 function JsonLd() {
-  const d = { "@context":"https://schema.org","@type":"Person",name:resumeData.name,jobTitle:resumeData.title,email:resumeData.email,telephone:resumeData.phone,url,sameAs:[resumeData.linkedin],address:{"@type":"PostalAddress",addressLocality:"Coimbatore",addressCountry:"IN"},knowsAbout:["Digital Marketing","Marketing Automation","Local SEO","Technical SEO","AEO","GEO","Email Marketing","Lead Generation","AI Automation","n8n"] };
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(d) }} />;
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ "@context": "https://schema.org", "@type": "Person", name: resumeData.name, jobTitle: resumeData.title, email: resumeData.email, telephone: resumeData.phone, url, sameAs: [resumeData.linkedin], address: { "@type": "PostalAddress", addressLocality: "Coimbatore", addressCountry: "IN" }, knowsAbout: ["Digital Marketing", "Marketing Automation", "Local SEO", "Technical SEO", "AEO", "GEO", "Email Marketing", "Lead Generation", "AI Automation", "n8n"] }) }} />;
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground noise`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#090909] text-white`}>
         <JsonLd />
         {children}
       </body>

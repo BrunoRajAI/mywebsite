@@ -1,50 +1,178 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
-import { useRef, useState, useEffect } from "react";
+import {
+  motion,
+  useMotionValue,
+  useSpring,
+  useTransform,
+  useInView,
+} from "framer-motion";
+import { useRef, useState, useEffect, useCallback } from "react";
 import { resumeData } from "@/lib/resume-data";
 
-function AnimatedStat({ value, label, delay, color = "#4F8FFF" }: { value: string; label: string; delay: number; color?: string }) {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-40px" });
+/* ═══════ EASE-OUT-CUBIC ═══════ */
+function easeOutCubic(t: number) {
+  return 1 - Math.pow(1 - t, 3);
+}
+
+/* ═══════ ANIMATED STAT ═══════ */
+function AnimatedStat({
+  value,
+  label,
+  index,
+}: {
+  value: string;
+  label: string;
+  index: number;
+}) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(cardRef, { once: true, margin: "-80px" });
   const [display, setDisplay] = useState(value.startsWith("Top") ? "—" : "0");
-  useEffect(() => {
-    if (!isInView) return;
-    if (value.startsWith("Top")) { setTimeout(() => setDisplay(value), delay * 1000 + 400); return; }
-    const num = parseFloat(value); if (isNaN(num)) return;
-    const suffix = value.replace(/[\d.]/g, "");
-    const start = performance.now() + delay * 1000;
+
+  const x = useMotionValue(0.5);
+  const y = useMotionValue(0.5);
+  const springX = useSpring(x, { stiffness: 300, damping: 30 });
+  const springY = useSpring(y, { stiffness: 300, damping: 30 });
+  const rotateX = useTransform(springY, [0, 1], [6, -6]);
+  const rotateY = useTransform(springX, [0, 1], [-6, 6]);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = cardRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    x.set((e.clientX - rect.left) / rect.width);
+    y.set((e.clientY - rect.top) / rect.height);
+  };
+  const handleMouseLeave = () => {
+    x.set(0.5);
+    y.set(0.5);
+  };
+
+  const animateCounter = useCallback(() => {
+    if (value.startsWith("Top")) {
+      const duration = 1200;
+      const start = performance.now();
+      const tick = (now: number) => {
+        const elapsed = now - start;
+        const progress = Math.min(elapsed / duration, 1);
+        if (progress < 0.4) {
+          setDisplay("—");
+        } else {
+          setDisplay(value);
+        }
+        if (progress < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+      return;
+    }
+
+    const match = value.match(/^(\d+)(.*)$/);
+    if (!match) {
+      setDisplay(value);
+      return;
+    }
+
+    const numStr = match[1];
+    const suffix = match[2];
+    const target = parseFloat(numStr);
+    const duration = 1200;
+    const start = performance.now();
+
     const tick = (now: number) => {
-      const p = Math.min((now - start) / 1100, 1);
-      const e = 1 - Math.pow(1 - p, 3);
-      setDisplay(`${Math.round(num * e)}${suffix}`);
-      if (p < 1) requestAnimationFrame(tick);
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = easeOutCubic(progress);
+      const current = Math.round(eased * target);
+      setDisplay(String(current) + suffix);
+      if (progress < 1) requestAnimationFrame(tick);
     };
     requestAnimationFrame(tick);
-  }, [isInView, value, delay]);
+  }, [value]);
+
+  useEffect(() => {
+    if (isInView) {
+      const timer = setTimeout(animateCounter, index * 120);
+      return () => clearTimeout(timer);
+    }
+  }, [isInView, animateCounter, index]);
+
   return (
-    <motion.div ref={ref} initial={{ opacity: 0, y: 35, scale: 0.96 }} whileInView={{ opacity: 1, y: 0, scale: 1 }} viewport={{ once: true, margin: "-40px" }} transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay }} className="glass rounded-2xl p-5 md:p-7 text-center group hover:border-white/[0.05] transition-all duration-500 relative overflow-hidden cursor-default">
-      <motion.div className="absolute top-0 left-0 right-0 h-px origin-left" initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true }} transition={{ delay: delay + 0.3, duration: 0.6 }} style={{ background: `linear-gradient(90deg, ${color}25, transparent)` }} />
-      <div className="text-3xl md:text-4xl font-bold tracking-tight mb-1.5" style={{ color }}>{display}</div>
-      <div className="text-[10px] text-white/20 font-mono tracking-[0.12em] uppercase">{label}</div>
+    <motion.div
+      ref={cardRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{
+        rotateX,
+        rotateY,
+        transformStyle: "preserve-3d",
+        perspective: 800,
+      }}
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.5, delay: index * 0.08 }}
+      className="glass rounded-2xl p-6 text-center transition-colors duration-300 hover:border-white/[0.06]"
+    >
+      {/* Top accent line */}
+      <motion.div
+        initial={{ scaleX: 0 }}
+        whileInView={{ scaleX: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8, delay: index * 0.08 + 0.3, ease: "easeOut" }}
+        className="w-full h-[1px] origin-left mb-5"
+        style={{
+          background:
+            "linear-gradient(90deg, rgba(99,102,241,0.3), transparent)",
+        }}
+      />
+
+      <div className="text-3xl md:text-4xl font-bold tracking-tight text-[#818CF8]">
+        {display}
+      </div>
+      <div className="text-[10px] text-white/25 font-mono tracking-[0.15em] uppercase mt-2">
+        {label}
+      </div>
     </motion.div>
   );
 }
 
+/* ═══════ MAIN COMPONENT ═══════ */
 export default function Stats() {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-80px" });
-  const colors = ["#4F8FFF", "#7C5CFC", "#00D4AA", "#4F8FFF", "#FF6B8A", "#4F8FFF"];
   return (
-    <section className="section-padding relative" ref={ref}>
-      <div className="absolute top-0 left-0 right-0 h-px section-sweep" style={{ background: "linear-gradient(90deg, transparent, rgba(79,143,255,0.12), transparent)" }} />
+    <section className="section-pad">
+      {/* Divider */}
       <div className="max-w-6xl mx-auto px-6">
-        <motion.div initial={{ opacity: 0, y: 30 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }} className="mb-16">
-          <div className="flex items-center gap-4 mb-4"><div className="section-line" /><span className="text-[11px] font-mono tracking-[0.2em] text-white/25 uppercase">Impact</span></div>
-          <h2 className="text-3xl md:text-5xl font-bold tracking-[-0.03em] text-white">Measurable Results</h2>
+        <div
+          className="w-full h-px mb-16"
+          style={{
+            background:
+              "linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent)",
+          }}
+        />
+
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
+          <span className="section-label">Impact</span>
+          <div className="section-line mt-2" />
+          <h2 className="text-2xl md:text-3xl font-bold text-white mt-4">
+            Measurable Results
+          </h2>
         </motion.div>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-5">
-          {resumeData.stats.map((s, i) => <AnimatedStat key={s.label} value={s.value} label={s.label} delay={i * 0.08} color={colors[i % colors.length]} />)}
+
+        {/* Stats grid */}
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 mt-12">
+          {resumeData.stats.map((stat, i) => (
+            <AnimatedStat
+              key={stat.label}
+              value={stat.value}
+              label={stat.label}
+              index={i}
+            />
+          ))}
         </div>
       </div>
     </section>
