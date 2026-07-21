@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef, useCallback } from "react";
 import { motion, useMotionValue, AnimatePresence } from "framer-motion";
-import { ArrowDown, Mail, Linkedin, Sparkles } from "lucide-react";
+import { Mail, Linkedin, Sparkles } from "lucide-react";
 import dynamic from "next/dynamic";
 import { resumeData } from "@/lib/resume-data";
 
@@ -15,7 +15,6 @@ export default function Hero() {
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [isTyping, setIsTyping] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
-  const typingTimer = useRef<ReturnType<typeof setTimeout>>();
 
   const scrollTo = useCallback((id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
@@ -42,7 +41,7 @@ export default function Hero() {
   const lastName = resumeData.name.split(" ").slice(2).join(" ");
 
   return (
-    <section ref={containerRef} className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#090909]">
+    <section id="hero-section" ref={containerRef} className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#090909]">
       {/* Three.js Background */}
       {mounted && <ThreeScene />}
 

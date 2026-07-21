@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useMemo, useEffect } from "react";
+import { useRef, useMemo, useEffect, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { useMotionValue, type MotionValue } from "framer-motion";
 import * as THREE from "three";
@@ -9,10 +9,27 @@ import { EffectComposer, Bloom } from "@react-three/postprocessing";
 
 /* ──────────────────────────── constants ──────────────────────────── */
 
-const PARTICLE_COUNT = 80;
+const PARTICLE_COUNT = 50;
 
 const INDIGO_HEX = "#6366F1";
 const LIGHT_INDIGO_HEX = "#818CF8";
+
+/* ──────────────────────── visibility hook ──────────────────────── */
+
+function useHeroVisible() {
+  const [visible, setVisible] = useState(true);
+  useEffect(() => {
+    const el = document.getElementById("hero-section");
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => setVisible(entry.isIntersecting),
+      { threshold: 0 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+  return visible;
+}
 
 /* ──────────────────────────── particles ──────────────────────────── */
 
@@ -27,10 +44,7 @@ function Particles() {
       positions[i * 3 + 2] = (Math.random() - 0.5) * 18;
     }
     const geo = new THREE.BufferGeometry();
-    geo.setAttribute(
-      "position",
-      new THREE.Float32BufferAttribute(positions, 3),
-    );
+    geo.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
     return geo;
   }, []);
 
@@ -84,12 +98,7 @@ function WireframeShape({
 
   return (
     <mesh ref={ref} position={position} geometry={geometry}>
-      <meshBasicMaterial
-        color={LIGHT_INDIGO_HEX}
-        wireframe
-        transparent
-        opacity={0.12}
-      />
+      <meshBasicMaterial color={LIGHT_INDIGO_HEX} wireframe transparent opacity={0.12} />
     </mesh>
   );
 }
@@ -179,25 +188,13 @@ function SceneContent({
   return (
     <>
       <CameraController mouseX={mouseX} mouseY={mouseY} />
-
-      {/* Lighting */}
       <ambientLight intensity={0.3} color={INDIGO_HEX} />
       <pointLight position={[5, 5, 5]} intensity={0.5} color={LIGHT_INDIGO_HEX} />
       <pointLight position={[-5, -3, 2]} intensity={0.3} color={INDIGO_HEX} />
-
-      {/* Particles */}
       <Particles />
-
-      {/* Wireframe shapes */}
       <WireframeShapes />
-
-      {/* Post‑processing */}
       <EffectComposer>
-        <Bloom
-          intensity={0.25}
-          luminanceThreshold={0.85}
-          luminanceSmoothing={0.9}
-        />
+        <Bloom intensity={0.25} luminanceThreshold={0.85} luminanceSmoothing={0.9} />
       </EffectComposer>
     </>
   );
@@ -208,29 +205,33 @@ function SceneContent({
 export default function ThreeScene() {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
+  const isVisible = useHeroVisible();
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       mouseX.set((e.clientX / window.innerWidth - 0.5) * 2);
       mouseY.set((e.clientY / window.innerHeight - 0.5) * 2);
     };
-    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, [mouseX, mouseY]);
 
   return (
     <div
+      id="hero-3d"
       style={{
         position: "absolute",
         inset: 0,
         width: "100%",
         height: "100%",
         pointerEvents: "none",
+        visibility: isVisible ? "visible" : "hidden",
       }}
     >
       <Canvas
-        gl={{ alpha: true, antialias: true }}
+        gl={{ alpha: true, antialias: true, powerPreference: "low-power" }}
         dpr={[1, 1.5]}
+        frameloop={isVisible ? "always" : "never"}
         camera={{ fov: 60 }}
       >
         <SceneContent mouseX={mouseX} mouseY={mouseY} />

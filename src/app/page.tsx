@@ -26,11 +26,11 @@ export default function Home() {
   // Lenis smooth scroll
   useEffect(() => {
     if (isLoading) return;
-    const lenis = new Lenis({ duration: 0.7, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), touchMultiplier: 1 });
+    const lenis = new Lenis({ duration: 0.5, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), touchMultiplier: 1 });
     lenis.on("scroll", ScrollTrigger.update);
-    gsap.ticker.add((time) => lenis.raf(time * 1000));
-    gsap.ticker.lagSmoothing(0);
-    return () => { gsap.ticker.remove((time) => lenis.raf(time * 1000)); lenis.destroy(); };
+    const raf = (time: number) => { lenis.raf(time * 1000); };
+    gsap.ticker.add(raf);
+    return () => { gsap.ticker.remove(raf); lenis.destroy(); };
   }, [isLoading]);
 
   // GSAP scroll animations

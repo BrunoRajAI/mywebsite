@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { useRef, useState, useCallback, useMemo, useEffect } from "react";
+import { useRef, useState, useCallback, useMemo } from "react";
 import { resumeData } from "@/lib/resume-data";
 
 /* ═══════ 3D TILT HOOK ═══════ */
@@ -29,30 +29,24 @@ function useTilt(deg: number = 4) {
 
 /* ═══════ PROFICIENCY LEVEL ═══════ */
 function ProficiencyBar({ level }: { level: "expert" | "advanced" | "proficient" }) {
-  const [width, setWidth] = useState(0);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          const w = level === "expert" ? 95 : level === "advanced" ? 75 : 55;
-          setWidth(w);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.5 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [level]);
+  const w = level === "expert" ? 95 : level === "advanced" ? 75 : 55;
 
   return (
-    <div ref={ref} className="proficiency-bar w-8 ml-auto shrink-0">
-      <div className="proficiency-fill" style={{ width: `${width}%` }} />
-    </div>
+    <motion.div
+      className="proficiency-bar w-8 ml-auto shrink-0"
+      initial={{ opacity: 1 }}
+      whileInView={{ "--fill-width": `${w}%` } as any}
+      viewport={{ once: true, margin: "-20px" }}
+      transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+    >
+      <motion.div
+        className="proficiency-fill"
+        initial={{ width: 0 }}
+        whileInView={{ width: `${w}%` }}
+        viewport={{ once: true, margin: "-20px" }}
+        transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+      />
+    </motion.div>
   );
 }
 
