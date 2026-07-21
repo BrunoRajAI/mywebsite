@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import Lenis from "@studio-freight/lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import LoadingScreen from "@/components/portfolio/LoadingScreen";
@@ -23,17 +22,7 @@ export default function Home() {
 
   const handleLoadComplete = useCallback(() => setIsLoading(false), []);
 
-  // Lenis smooth scroll
-  useEffect(() => {
-    if (isLoading) return;
-    const lenis = new Lenis({ duration: 0.5, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), touchMultiplier: 1 });
-    lenis.on("scroll", ScrollTrigger.update);
-    const raf = (time: number) => { lenis.raf(time * 1000); };
-    gsap.ticker.add(raf);
-    return () => { gsap.ticker.remove(raf); lenis.destroy(); };
-  }, [isLoading]);
-
-  // GSAP scroll animations
+  // GSAP scroll animations (uses native scroll, no Lenis)
   useEffect(() => {
     if (isLoading) return;
     const ctx = gsap.context(() => {
