@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Lenis from "@studio-freight/lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import LoadingScreen from "@/components/portfolio/LoadingScreen";
+import CustomCursor from "@/components/portfolio/CustomCursor";
 import Navigation from "@/components/portfolio/Navigation";
 import Hero from "@/components/portfolio/Hero";
 import About from "@/components/portfolio/About";
@@ -49,6 +50,7 @@ export default function Home() {
 
   return (
     <main className="relative min-h-screen flex flex-col bg-[#090909] noise">
+      <CustomCursor />
       <LoadingScreen onComplete={handleLoadComplete} />
       {!isLoading && (
         <>

@@ -19,15 +19,18 @@ function easeOutCubic(t: number) {
 function AnimatedStat({
   value,
   label,
+  description,
   index,
 }: {
   value: string;
   label: string;
+  description: string;
   index: number;
 }) {
   const cardRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(cardRef, { once: true, margin: "-80px" });
-  const [display, setDisplay] = useState(value.startsWith("Top") ? "—" : "0");
+  const [display, setDisplay] = useState(value.startsWith("Top") || value.includes("→") ? "—" : "0");
+  const [isHovered, setIsHovered] = useState(false);
 
   const x = useMotionValue(0.5);
   const y = useMotionValue(0.5);
@@ -42,13 +45,10 @@ function AnimatedStat({
     x.set((e.clientX - rect.left) / rect.width);
     y.set((e.clientY - rect.top) / rect.height);
   };
-  const handleMouseLeave = () => {
-    x.set(0.5);
-    y.set(0.5);
-  };
+  const handleMouseLeave = () => { x.set(0.5); y.set(0.5); };
 
   const animateCounter = useCallback(() => {
-    if (value.startsWith("Top")) {
+    if (value.startsWith("Top") || value.includes("→")) {
       const duration = 1200;
       const start = performance.now();
       const tick = (now: number) => {
@@ -66,15 +66,12 @@ function AnimatedStat({
     }
 
     const match = value.match(/^(\d+)(.*)$/);
-    if (!match) {
-      setDisplay(value);
-      return;
-    }
+    if (!match) { setDisplay(value); return; }
 
     const numStr = match[1];
     const suffix = match[2];
     const target = parseFloat(numStr);
-    const duration = 1200;
+    const duration = 1400;
     const start = performance.now();
 
     const tick = (now: number) => {
@@ -90,7 +87,7 @@ function AnimatedStat({
 
   useEffect(() => {
     if (isInView) {
-      const timer = setTimeout(animateCounter, index * 120);
+      const timer = setTimeout(animateCounter, index * 100);
       return () => clearTimeout(timer);
     }
   }, [isInView, animateCounter, index]);
@@ -100,37 +97,45 @@ function AnimatedStat({
       ref={cardRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      style={{
-        rotateX,
-        rotateY,
-        transformStyle: "preserve-3d",
-        perspective: 800,
-      }}
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
+      style={{ rotateX, rotateY, transformStyle: "preserve-3d", perspective: 800 }}
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.5, delay: index * 0.08 }}
-      className="glass rounded-2xl p-6 text-center transition-colors duration-300 hover:border-white/[0.06]"
+      transition={{ duration: 0.5, delay: index * 0.06 }}
+      className="glass rounded-2xl p-6 text-center transition-all duration-300 hover:border-[#6366F1]/10 group"
     >
       {/* Top accent line */}
       <motion.div
         initial={{ scaleX: 0 }}
         whileInView={{ scaleX: 1 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.8, delay: index * 0.08 + 0.3, ease: "easeOut" }}
+        transition={{ duration: 0.8, delay: index * 0.06 + 0.3, ease: "easeOut" }}
         className="w-full h-[1px] origin-left mb-5"
-        style={{
-          background:
-            "linear-gradient(90deg, rgba(99,102,241,0.3), transparent)",
-        }}
+        style={{ background: "linear-gradient(90deg, rgba(99,102,241,0.3), transparent)" }}
       />
 
-      <div className="text-3xl md:text-4xl font-bold tracking-tight text-[#818CF8]">
-        {display}
-      </div>
+      <motion.div
+        animate={{ scale: isHovered ? 1.05 : 1 }}
+        transition={{ type: "spring", stiffness: 300, damping: 20 }}
+      >
+        <div className="text-3xl md:text-4xl font-bold tracking-tight text-[#818CF8]">
+          {display}
+        </div>
+      </motion.div>
       <div className="text-[10px] text-white/25 font-mono tracking-[0.15em] uppercase mt-2">
         {label}
       </div>
+      <motion.p
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.4 + index * 0.06 }}
+        className="text-[11px] text-white/15 mt-2 leading-relaxed max-w-[180px] mx-auto"
+      >
+        {description}
+      </motion.p>
     </motion.div>
   );
 }
@@ -138,16 +143,9 @@ function AnimatedStat({
 /* ═══════ MAIN COMPONENT ═══════ */
 export default function Stats() {
   return (
-    <section className="section-pad">
-      {/* Divider */}
+    <section id="stats" className="section-pad">
       <div className="max-w-6xl mx-auto px-6">
-        <div
-          className="w-full h-px mb-16"
-          style={{
-            background:
-              "linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent)",
-          }}
-        />
+        <div className="w-full h-px mb-16" style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent)" }} />
 
         {/* Header */}
         <motion.div
@@ -155,21 +153,26 @@ export default function Stats() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
+          className="mb-12"
         >
           <span className="section-label">Impact</span>
           <div className="section-line mt-2" />
           <h2 className="text-2xl md:text-3xl font-bold text-white mt-4">
             Measurable Results
           </h2>
+          <p className="text-sm text-white/20 mt-2 max-w-lg">
+            Real metrics from real work — every number backed by deliverables across {resumeData.totalCompanies} companies.
+          </p>
         </motion.div>
 
         {/* Stats grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 mt-12">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5">
           {resumeData.stats.map((stat, i) => (
             <AnimatedStat
               key={stat.label}
               value={stat.value}
               label={stat.label}
+              description={stat.description}
               index={i}
             />
           ))}

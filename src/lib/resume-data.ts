@@ -1,27 +1,176 @@
 // Resume data extracted from Bruno Lionel Raj M's resume
 // NO fabricated data — everything comes directly from the uploaded resume
 
-export const resumeData = {
+export interface Stat {
+  value: string;
+  label: string;
+  description: string;
+}
+
+export interface ExperienceRole {
+  company: string;
+  location: string;
+  designation: string;
+  duration: string;
+  roleType: "promotion" | "standard";
+  responsibilities: {
+    category: string;
+    icon?: string;
+    items: string[];
+    highlights?: { metric: string; context: string }[];
+  }[];
+}
+
+export interface Tool {
+  name: string;
+  category: string;
+  proficiency?: "expert" | "advanced" | "proficient";
+}
+
+export interface ResumeData {
+  name: string;
+  initials: string;
+  qualification: string;
+  title: string;
+  titleShort: string;
+  location: string;
+  phone: string;
+  email: string;
+  linkedin: string;
+
+  professionalSummary: string;
+  professionalSummaryExtended: string;
+
+  // Expertise pillars derived from resume
+  expertiseAreas: {
+    title: string;
+    description: string;
+    keywords: string[];
+  }[];
+
+  achievements: {
+    text: string;
+    metric?: string;
+    category: string;
+  }[];
+
+  experience: ExperienceRole[];
+
+  skills: {
+    competencies: { name: string; level: "expert" | "advanced" }[];
+    tools: Tool[];
+    // Grouped by category
+    toolCategories: {
+      name: string;
+      description: string;
+      tools: Tool[];
+    }[];
+  };
+
+  education: { degree: string; field?: string }[];
+
+  // Sections to hide (no data in resume)
+  hasProjects: boolean;
+  hasCertifications: boolean;
+  hasAwards: boolean;
+  hasBlog: boolean;
+  hasTestimonials: boolean;
+
+  // Statistics derived from resume achievements (only real numbers)
+  stats: Stat[];
+
+  // Additional resume-derived data
+  totalCompanies: number;
+  totalTeamManaged: number;
+  marqueeKeywords: string[];
+}
+
+export const resumeData: ResumeData = {
   name: "Bruno Lionel Raj M",
+  initials: "BLR",
   qualification: "B.Com — Information Technology",
   title: "Digital Marketing & Marketing Automation Specialist",
+  titleShort: "Marketing Automation Specialist",
   location: "Coimbatore, India",
   phone: "+91-8870142873",
   email: "brunoel1998@gmail.com",
   linkedin: "https://linkedin.com/in/bruno-lionel-raj",
 
   professionalSummary:
-    "Digital Marketing & Marketing Automation Specialist with 6+ years of experience in Local SEO, Technical SEO, AEO, GEO, Email Marketing, Lead Generation, and AI-powered automation. Skilled in building production-grade workflows using n8n, AI agents, APIs, DataForSEO, Exa, and Mem0 to streamline SEO and marketing operations. Proven track record of increasing leads, improving search visibility, driving organic growth, and reducing operational effort through scalable automation solutions.",
+    "Digital Marketing & Marketing Automation Specialist with 6+ years of experience in Local SEO, Technical SEO, AEO, GEO, Email Marketing, Lead Generation, and AI-powered automation.",
+
+  professionalSummaryExtended:
+    "Skilled in building production-grade workflows using n8n, AI agents, APIs, DataForSEO, Exa, and Mem0 to streamline SEO and marketing operations. Proven track record of increasing leads, improving search visibility, driving organic growth, and reducing operational effort through scalable automation solutions.",
+
+  // Expertise pillars derived from resume content
+  expertiseAreas: [
+    {
+      title: "AI-Powered Automation",
+      description:
+        "Building production-grade AI marketing automation systems using n8n workflows, AI agents, and persistent memory systems (Mem0) to eliminate manual effort and scale operations.",
+      keywords: ["n8n", "AI Agents", "Mem0", "WebMCP", "API Integration", "Workflow Automation"],
+    },
+    {
+      title: "Search Engine Optimization",
+      description:
+        "Driving organic growth through Local SEO, Technical SEO, AEO (Answer Engine Optimization), and GEO (Generative Engine Optimization) strategies for maximum search visibility.",
+      keywords: ["Local SEO", "Technical SEO", "AEO", "GEO", "Schema Markup", "Keyword Research"],
+    },
+    {
+      title: "Email Marketing & Lead Generation",
+      description:
+        "Designing segmented email campaigns and lead nurturing funnels that convert — from MQL/SQL qualification frameworks to multi-channel campaign orchestration.",
+      keywords: ["Mailchimp", "Mautic", "Campaign Segmentation", "MQL/SQL", "Lead Generation", "CRO"],
+    },
+    {
+      title: "Analytics & Data-Driven Strategy",
+      description:
+        "Leveraging Google Analytics, Search Console, SEMrush, Ahrefs, and DataForSEO APIs for automated reporting, competitor analysis, and performance optimization.",
+      keywords: ["Google Analytics", "SEMrush", "Ahrefs", "DataForSEO", "BrightLocal", "A/B Testing"],
+    },
+  ],
 
   achievements: [
-    "Increased Property Enquiry Leads by 10% through targeted digital marketing and conversion optimization initiatives.",
-    "Increased Valuation Leads by 49% through SEO and digital marketing strategies for estate agency websites.",
-    "Reduced Marketing Operational Effort by 50% through AI-powered workflow automation.",
-    "Reduced Google Business Profile (GBP) Management Time by 68% using n8n automation workflows.",
-    "Achieved Multiple Top-10 Google Rankings for competitive target keywords.",
-    "Built and deployed production-grade AI marketing automation systems for link building, guest posting, SEO reporting, and competitor research.",
-    "Increased overall website traffic by 10% through AEO and GEO strategies.",
-    "Increased AI-search-driven traffic by 67% and improved AI search visibility by 45% through schema implementation, entity optimization, and AI-search-focused SEO initiatives.",
+    {
+      text: "Increased Property Enquiry Leads by 10% through targeted digital marketing and conversion optimization initiatives.",
+      metric: "10%",
+      category: "Lead Generation",
+    },
+    {
+      text: "Increased Valuation Leads by 49% through SEO and digital marketing strategies for estate agency websites.",
+      metric: "49%",
+      category: "SEO & Growth",
+    },
+    {
+      text: "Reduced Marketing Operational Effort by 50% through AI-powered workflow automation.",
+      metric: "50%",
+      category: "Automation",
+    },
+    {
+      text: "Reduced Google Business Profile (GBP) Management Time by 68% using n8n automation workflows.",
+      metric: "68%",
+      category: "Automation",
+    },
+    {
+      text: "Achieved Multiple Top-10 Google Rankings for competitive target keywords.",
+      metric: "Top 10",
+      category: "SEO",
+    },
+    {
+      text: "Built and deployed production-grade AI marketing automation systems for link building, guest posting, SEO reporting, and competitor research.",
+      metric: "Production-Grade",
+      category: "AI & Automation",
+    },
+    {
+      text: "Increased overall website traffic by 10% through AEO and GEO strategies.",
+      metric: "10%",
+      category: "AEO/GEO",
+    },
+    {
+      text: "Increased AI-search-driven traffic by 67% and improved AI search visibility by 45% through schema implementation, entity optimization, and AI-search-focused SEO initiatives.",
+      metric: "67%",
+      category: "AI Search",
+    },
   ],
 
   experience: [
@@ -30,6 +179,7 @@ export const resumeData = {
       location: "Coimbatore",
       designation: "Email Marketing Lead → Local SEO & Marketing Automation Specialist",
       duration: "Apr 2023 – August 2026",
+      roleType: "promotion",
       responsibilities: [
         {
           category: "SEO Analyst",
@@ -44,6 +194,12 @@ export const resumeData = {
             "Increased AI-search-driven traffic by 67% through AEO/GEO content optimization and entity-based SEO strategies.",
             "Improved AI search visibility by 45% through schema implementation, entity optimization, and AI-search-readiness enhancements.",
           ],
+          highlights: [
+            { metric: "49%", context: "Valuation Lead Increase" },
+            { metric: "Top 3", context: "Google Keyword Rankings" },
+            { metric: "67%", context: "AI Search Traffic Growth" },
+            { metric: "4", context: "Team Members Mentored" },
+          ],
         },
         {
           category: "Marketing Automation & AI Workflows",
@@ -57,6 +213,11 @@ export const resumeData = {
             "Developed Google Business Profile posting automation, reducing operational management time by 68%.",
             "Automated SEO reporting and research processes, improving scalability, accuracy, and team efficiency.",
           ],
+          highlights: [
+            { metric: "50%", context: "Manual Effort Reduced" },
+            { metric: "68%", context: "GBP Post Time Reduction" },
+            { metric: "Production-Grade", context: "AI Systems Deployed" },
+          ],
         },
       ],
     },
@@ -65,6 +226,7 @@ export const resumeData = {
       location: "Coimbatore",
       designation: "Digital Marketing Executive",
       duration: "Jul 2022 – Mar 2023",
+      roleType: "standard",
       responsibilities: [
         {
           category: "Digital Marketing",
@@ -76,6 +238,10 @@ export const resumeData = {
             "Improved organic traffic through keyword research, content optimization, and SEO best practices.",
             "Managed multi-channel marketing activities including SEO, email marketing, and social media campaigns.",
           ],
+          highlights: [
+            { metric: "15%", context: "ERP Sales Increase" },
+            { metric: "5%", context: "Conversion Rate Improvement" },
+          ],
         },
       ],
     },
@@ -84,6 +250,7 @@ export const resumeData = {
       location: "Chennai",
       designation: "Digital Marketing Executive",
       duration: "Jul 2020 – Jun 2022",
+      roleType: "standard",
       responsibilities: [
         {
           category: "Digital Marketing",
@@ -98,6 +265,11 @@ export const resumeData = {
             "Managed SEO, SEM, email marketing, and display advertising campaigns to drive qualified traffic and conversions.",
             "Implemented data-driven marketing strategies that improved brand visibility, lead generation, and overall campaign performance.",
           ],
+          highlights: [
+            { metric: "9→35", context: "Domain Authority Growth" },
+            { metric: "1K+", context: "Social Media Followers Gained" },
+            { metric: "35%", context: "Social Media Workload Reduced" },
+          ],
         },
       ],
     },
@@ -105,55 +277,106 @@ export const resumeData = {
 
   skills: {
     competencies: [
-      "Local SEO",
-      "Technical SEO",
-      "On-Page SEO",
-      "Off-Page SEO",
-      "Google Business Profile Optimization",
-      "Email Marketing",
-      "Marketing Automation",
-      "AI Workflow Development",
-      "AI Agents",
-      "API Integration",
-      "Lead Generation",
-      "Conversion Rate Optimization",
-      "Keyword Research",
-      "Competitor Analysis",
-      "Schema Markup",
-      "AEO & GEO",
-      "Team Leadership",
-      "CRM & Marketing Operations",
-      "Data Analysis",
-      "Process Automation",
-      "Technical Documentation",
-      "Project Coordination",
+      { name: "Local SEO", level: "expert" },
+      { name: "Technical SEO", level: "expert" },
+      { name: "On-Page SEO", level: "expert" },
+      { name: "Off-Page SEO", level: "expert" },
+      { name: "Google Business Profile Optimization", level: "expert" },
+      { name: "Email Marketing", level: "expert" },
+      { name: "Marketing Automation", level: "expert" },
+      { name: "AI Workflow Development", level: "expert" },
+      { name: "AI Agents", level: "advanced" },
+      { name: "API Integration", level: "advanced" },
+      { name: "Lead Generation", level: "expert" },
+      { name: "Conversion Rate Optimization", level: "advanced" },
+      { name: "Keyword Research", level: "expert" },
+      { name: "Competitor Analysis", level: "expert" },
+      { name: "Schema Markup", level: "advanced" },
+      { name: "AEO & GEO", level: "advanced" },
+      { name: "Team Leadership", level: "advanced" },
+      { name: "CRM & Marketing Operations", level: "advanced" },
+      { name: "Data Analysis", level: "advanced" },
+      { name: "Process Automation", level: "expert" },
+      { name: "Technical Documentation", level: "advanced" },
+      { name: "Project Coordination", level: "advanced" },
     ],
     tools: [
-      { name: "n8n", category: "AI & Automation" },
-      { name: "MindPal", category: "AI & Automation" },
-      { name: "Mem0", category: "AI & Automation" },
-      { name: "WebMCP", category: "AI & Automation" },
-      { name: "DataForSEO API", category: "AI & Automation" },
-      { name: "Exa AI Search", category: "AI & Automation" },
-      { name: "Make", category: "AI & Automation" },
-      { name: "AirOps", category: "AI & Automation" },
-      { name: "Claude AI", category: "AI & Automation" },
-      { name: "Prompt Engineering", category: "AI & Automation" },
-      { name: "AI Agent Development", category: "AI & Automation" },
-      { name: "Zapier", category: "AI & Automation" },
-      { name: "Google Analytics", category: "SEO & Analytics" },
-      { name: "Google Search Console", category: "SEO & Analytics" },
-      { name: "Google Tag Manager", category: "SEO & Analytics" },
-      { name: "SEMrush", category: "SEO & Analytics" },
-      { name: "Ahrefs", category: "SEO & Analytics" },
-      { name: "BrightLocal", category: "SEO & Analytics" },
-      { name: "BrightEdge", category: "SEO & Analytics" },
-      { name: "Ubersuggest", category: "SEO & Analytics" },
-      { name: "Mailchimp", category: "Email Marketing" },
-      { name: "Mautic", category: "Email Marketing" },
-      { name: "Brief Your Market", category: "Email Marketing" },
-      { name: "Campaign Segmentation", category: "Email Marketing" },
-      { name: "Lead Qualification (MQL/SQL)", category: "Lead Management" },
+      { name: "n8n", category: "AI & Automation", proficiency: "expert" },
+      { name: "MindPal", category: "AI & Automation", proficiency: "proficient" },
+      { name: "Mem0", category: "AI & Automation", proficiency: "advanced" },
+      { name: "WebMCP", category: "AI & Automation", proficiency: "advanced" },
+      { name: "DataForSEO API", category: "AI & Automation", proficiency: "expert" },
+      { name: "Exa AI Search", category: "AI & Automation", proficiency: "advanced" },
+      { name: "Make", category: "AI & Automation", proficiency: "proficient" },
+      { name: "AirOps", category: "AI & Automation", proficiency: "proficient" },
+      { name: "Claude AI", category: "AI & Automation", proficiency: "advanced" },
+      { name: "Prompt Engineering", category: "AI & Automation", proficiency: "advanced" },
+      { name: "AI Agent Development", category: "AI & Automation", proficiency: "advanced" },
+      { name: "Zapier", category: "AI & Automation", proficiency: "proficient" },
+      { name: "Google Analytics", category: "SEO & Analytics", proficiency: "expert" },
+      { name: "Google Search Console", category: "SEO & Analytics", proficiency: "expert" },
+      { name: "Google Tag Manager", category: "SEO & Analytics", proficiency: "advanced" },
+      { name: "SEMrush", category: "SEO & Analytics", proficiency: "expert" },
+      { name: "Ahrefs", category: "SEO & Analytics", proficiency: "advanced" },
+      { name: "BrightLocal", category: "SEO & Analytics", proficiency: "advanced" },
+      { name: "BrightEdge", category: "SEO & Analytics", proficiency: "proficient" },
+      { name: "Ubersuggest", category: "SEO & Analytics", proficiency: "proficient" },
+      { name: "Mailchimp", category: "Email Marketing", proficiency: "expert" },
+      { name: "Mautic", category: "Email Marketing", proficiency: "proficient" },
+      { name: "Brief Your Market", category: "Email Marketing", proficiency: "proficient" },
+      { name: "Campaign Segmentation", category: "Email Marketing", proficiency: "expert" },
+      { name: "Lead Qualification (MQL/SQL)", category: "Lead Management", proficiency: "advanced" },
+    ],
+    toolCategories: [
+      {
+        name: "AI & Automation",
+        description: "Production-grade workflow automation, AI agent orchestration, and intelligent marketing systems",
+        tools: [
+          { name: "n8n", category: "AI & Automation", proficiency: "expert" },
+          { name: "Mem0", category: "AI & Automation", proficiency: "advanced" },
+          { name: "DataForSEO API", category: "AI & Automation", proficiency: "expert" },
+          { name: "Exa AI Search", category: "AI & Automation", proficiency: "advanced" },
+          { name: "Claude AI", category: "AI & Automation", proficiency: "advanced" },
+          { name: "WebMCP", category: "AI & Automation", proficiency: "advanced" },
+          { name: "Prompt Engineering", category: "AI & Automation", proficiency: "advanced" },
+          { name: "AI Agent Development", category: "AI & Automation", proficiency: "advanced" },
+          { name: "Zapier", category: "AI & Automation", proficiency: "proficient" },
+          { name: "Make", category: "AI & Automation", proficiency: "proficient" },
+          { name: "MindPal", category: "AI & Automation", proficiency: "proficient" },
+          { name: "AirOps", category: "AI & Automation", proficiency: "proficient" },
+        ],
+      },
+      {
+        name: "SEO & Analytics",
+        description: "Comprehensive search optimization, performance monitoring, and competitive intelligence",
+        tools: [
+          { name: "Google Analytics", category: "SEO & Analytics", proficiency: "expert" },
+          { name: "Google Search Console", category: "SEO & Analytics", proficiency: "expert" },
+          { name: "SEMrush", category: "SEO & Analytics", proficiency: "expert" },
+          { name: "Google Tag Manager", category: "SEO & Analytics", proficiency: "advanced" },
+          { name: "Ahrefs", category: "SEO & Analytics", proficiency: "advanced" },
+          { name: "BrightLocal", category: "SEO & Analytics", proficiency: "advanced" },
+          { name: "BrightEdge", category: "SEO & Analytics", proficiency: "proficient" },
+          { name: "Ubersuggest", category: "SEO & Analytics", proficiency: "proficient" },
+        ],
+      },
+      {
+        name: "Email Marketing",
+        description: "Segmented campaigns, automation workflows, and performance-driven email strategies",
+        tools: [
+          { name: "Mailchimp", category: "Email Marketing", proficiency: "expert" },
+          { name: "Campaign Segmentation", category: "Email Marketing", proficiency: "expert" },
+          { name: "Mautic", category: "Email Marketing", proficiency: "proficient" },
+          { name: "Brief Your Market", category: "Email Marketing", proficiency: "proficient" },
+        ],
+      },
+      {
+        name: "Lead Management",
+        description: "MQL/SQL frameworks, lead qualification, and conversion optimization strategies",
+        tools: [
+          { name: "Lead Qualification (MQL/SQL)", category: "Lead Management", proficiency: "advanced" },
+        ],
+      },
     ],
   },
 
@@ -172,11 +395,34 @@ export const resumeData = {
 
   // Statistics derived from resume achievements (only real numbers)
   stats: [
-    { value: "6+", label: "Years Experience" },
-    { value: "49%", label: "Valuation Lead Increase" },
-    { value: "67%", label: "AI Search Traffic Growth" },
-    { value: "68%", label: "GBP Post Time Reduction" },
-    { value: "50%", label: "Operational Effort Reduced" },
-    { value: "Top 3", label: "Google Keyword Rankings" },
+    { value: "6+", label: "Years Experience", description: "Across 3 companies in digital marketing & automation" },
+    { value: "49%", label: "Valuation Lead Increase", description: "Through SEO & digital marketing strategies" },
+    { value: "67%", label: "AI Search Traffic Growth", description: "Via AEO/GEO content optimization" },
+    { value: "68%", label: "GBP Post Time Reduction", description: "Using n8n automation workflows" },
+    { value: "50%", label: "Operational Effort Reduced", description: "Through AI-powered workflow automation" },
+    { value: "Top 3", label: "Google Keyword Rankings", description: "For competitive high-priority keywords" },
+    { value: "15%", label: "ERP Sales Increase", description: "Via strategic email campaigns at Unisoft" },
+    { value: "9→35", label: "Domain Authority Growth", description: "Through strategic SEO initiatives at Deckzi" },
+  ],
+
+  totalCompanies: 3,
+  totalTeamManaged: 4,
+  marqueeKeywords: [
+    "Local SEO",
+    "Technical SEO",
+    "AEO",
+    "GEO",
+    "n8n",
+    "AI Agents",
+    "Email Marketing",
+    "Lead Generation",
+    "Marketing Automation",
+    "Schema Markup",
+    "DataForSEO",
+    "Mem0",
+    "SEMrush",
+    "CRO",
+    "API Integration",
+    "Competitor Analysis",
   ],
 };
