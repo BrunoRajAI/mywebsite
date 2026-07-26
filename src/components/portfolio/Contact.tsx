@@ -153,6 +153,34 @@ export default function Contact() {
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           className="mb-16 text-center"
         >
+          {/* Profile photo */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={isInView ? { opacity: 1, scale: 1 } : {}}
+            transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+            className="flex justify-center mb-8"
+          >
+            <div className="relative">
+              <div className="absolute -inset-2 rounded-full bg-gradient-to-br from-[#6366F1]/30 via-[#818CF8]/15 to-transparent blur-xl" />
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                className="absolute -inset-1 rounded-full pointer-events-none"
+                style={{
+                  background: "conic-gradient(from 0deg, transparent 0deg, rgba(99,102,241,0.4) 60deg, transparent 120deg, transparent 240deg, rgba(129,140,248,0.3) 300deg, transparent 360deg)",
+                }}
+              />
+              <img
+                src="/profile.png"
+                alt={resumeData.name}
+                className="relative w-24 h-24 rounded-full object-cover border-2 border-white/10"
+              />
+              <span className="absolute bottom-1 right-1 w-4 h-4 rounded-full bg-[#6366F1] border-2 border-[#090909] flex items-center justify-center">
+                <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse-soft" />
+              </span>
+            </div>
+          </motion.div>
+
           <div className="flex items-center justify-center gap-4 mb-4">
             <div className="section-line" style={{ transform: "scaleX(-1)" }} />
             <span className="section-label">Contact</span>

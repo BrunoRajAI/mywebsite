@@ -92,6 +92,23 @@ export default function About() {
           >
             <div className="absolute -top-20 -right-20 w-72 h-72 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" style={{ background: "radial-gradient(circle, rgba(99,102,241,0.06) 0%, transparent 70%)" }} />
 
+            {/* Header row with avatar */}
+            <div className="flex items-center gap-5 mb-6 pb-6 border-b border-white/[0.04]">
+              <div className="relative shrink-0">
+                <div className="absolute -inset-1 rounded-full bg-gradient-to-br from-[#6366F1]/40 to-[#818CF8]/20 blur-md" />
+                <img
+                  src="/profile.png"
+                  alt={resumeData.name}
+                  className="relative w-16 h-16 rounded-full object-cover border-2 border-white/10"
+                />
+                <span className="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-[#6366F1] border-2 border-[#090909]" />
+              </div>
+              <div>
+                <h3 className="text-base font-semibold text-white/90">{resumeData.name}</h3>
+                <p className="text-xs text-white/30 font-mono tracking-wider uppercase mt-0.5">{resumeData.titleShort}</p>
+              </div>
+            </div>
+
             <p className="text-white/50 leading-[1.85] text-[15px] relative z-10 mb-6">
               {resumeData.professionalSummary}
             </p>

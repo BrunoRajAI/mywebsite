@@ -73,10 +73,21 @@ export default function Navigation() {
           <motion.a
             href="#"
             onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); }}
-            className="text-white font-semibold tracking-tight text-sm pl-3 pr-2"
-            whileHover={{ scale: 1.03 }}
+            className="flex items-center gap-2 pl-2 pr-3 group"
+            whileHover={{ scale: 1.02 }}
           >
-            {resumeData.name.split(" ").slice(0, 2).join(" ")}
+            <div className="relative shrink-0">
+              <div className="absolute -inset-0.5 rounded-full bg-gradient-to-br from-[#6366F1]/60 to-[#818CF8]/30 blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <img
+                src="/profile.png"
+                alt={resumeData.name}
+                className="relative w-7 h-7 rounded-full object-cover border border-white/10"
+              />
+              <span className="absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#6366F1] border border-[#090909]" />
+            </div>
+            <span className="text-white font-semibold tracking-tight text-sm hidden sm:inline">
+              {resumeData.name.split(" ").slice(0, 2).join(" ")}
+            </span>
           </motion.a>
           <div className="hidden md:flex items-center gap-0.5">
             {navLinks.map((link) => {
