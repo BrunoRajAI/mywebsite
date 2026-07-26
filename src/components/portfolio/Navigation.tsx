@@ -58,6 +58,9 @@ export default function Navigation() {
     document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
   };
 
+  // Short brand name — first name only, never wraps
+  const brandName = resumeData.name.split(" ")[0];
+
   return (
     <>
       <motion.nav
@@ -66,15 +69,19 @@ export default function Navigation() {
         transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
         className="fixed top-5 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none"
       >
-        <div className={`max-w-sm w-full flex items-center justify-between rounded-full px-2 py-1.5 transition-all duration-500 pointer-events-auto ${
-          isScrolled
-            ? "bg-[rgba(9,9,9,0.75)] backdrop-blur-2xl border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.4)]"
-            : "bg-transparent border border-transparent"
-        }`}>
+        {/* ─── Pill container: w-fit + max-w-[95vw] keeps it centered & never overflowing ─── */}
+        <div
+          className={`w-fit max-w-[95vw] flex items-center justify-between gap-3 sm:gap-4 md:gap-5 lg:gap-6 rounded-full pl-2 pr-3 py-2 transition-all duration-500 pointer-events-auto ${
+            isScrolled
+              ? "bg-[rgba(9,9,9,0.75)] backdrop-blur-2xl border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.4)]"
+              : "bg-transparent border border-transparent"
+          }`}
+        >
+          {/* ─── BRAND: avatar + name — own flex container, never wraps, never shrinks ─── */}
           <motion.a
             href="#"
             onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); }}
-            className="flex items-center gap-2 pl-2 pr-3 group"
+            className="flex items-center gap-2.5 flex-shrink-0 pl-1.5 pr-1 group whitespace-nowrap"
             whileHover={{ scale: 1.02 }}
           >
             <div className="relative shrink-0">
@@ -82,23 +89,28 @@ export default function Navigation() {
               <img
                 src="/profile.png"
                 alt={resumeData.name}
-                className="relative w-7 h-7 rounded-full object-cover border border-white/10"
+                className="relative w-8 h-8 rounded-full object-cover border border-white/10"
               />
-              <span className="absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#6366F1] border border-[#090909]" />
+              <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-[#6366F1] border-2 border-[#090909]" />
             </div>
-            <span className="text-white font-semibold tracking-tight text-sm hidden sm:inline">
-              {resumeData.name.split(" ").slice(0, 2).join(" ")}
+            <span className="text-white font-semibold tracking-tight text-sm whitespace-nowrap hidden sm:inline">
+              {brandName}
             </span>
           </motion.a>
-          <div className="hidden md:flex items-center gap-0.5">
+
+          {/* ─── Subtle vertical divider — premium separation between brand & nav ─── */}
+          <div className="hidden md:block w-px h-6 bg-white/[0.08] flex-shrink-0" />
+
+          {/* ─── DESKTOP NAV: gap-4 tablet, gap-8 desktop ─── */}
+          <div className="hidden md:flex items-center gap-4 lg:gap-8">
             {navLinks.map((link) => {
               const active = activeSection === link.href.replace("#", "");
               return (
                 <motion.button
                   key={link.href}
                   onClick={() => scrollTo(link.href)}
-                  className={`relative px-3 py-1.5 text-[13px] transition-colors duration-300 ${
-                    active ? "text-[#818CF8]" : "text-white/40 hover:text-white/80"
+                  className={`relative px-1 py-1.5 text-[13px] font-medium tracking-tight whitespace-nowrap transition-colors duration-300 ${
+                    active ? "text-[#818CF8]" : "text-white/50 hover:text-white/90"
                   }`}
                   whileHover={{ y: -1 }}
                 >
@@ -107,7 +119,7 @@ export default function Navigation() {
                     {active && (
                       <motion.span
                         layoutId="navDot"
-                        className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[#818CF8]"
+                        className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[#818CF8]"
                         transition={{ type: "spring", stiffness: 350, damping: 30 }}
                       />
                     )}
@@ -116,12 +128,19 @@ export default function Navigation() {
               );
             })}
           </div>
-          <button className="md:hidden text-white/50 hover:text-white p-2" onClick={() => setIsMobileOpen(!isMobileOpen)} aria-label="Menu">
+
+          {/* ─── MOBILE hamburger ─── */}
+          <button
+            className="md:hidden text-white/60 hover:text-white p-2 flex-shrink-0"
+            onClick={() => setIsMobileOpen(!isMobileOpen)}
+            aria-label="Menu"
+          >
             {isMobileOpen ? <X size={18} /> : <Menu size={18} />}
           </button>
         </div>
       </motion.nav>
 
+      {/* ─── MOBILE fullscreen menu ─── */}
       <AnimatePresence>
         {isMobileOpen && (
           <motion.div

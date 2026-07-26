@@ -35,7 +35,7 @@ export default function Hero() {
   const lastName = resumeData.name.split(" ").slice(1).join(" ");
 
   return (
-    <section id="hero-section" ref={containerRef} className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#090909] pt-24 pb-12">
+    <section id="hero-section" ref={containerRef} className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#090909] pt-28 pb-12">
       {mounted && <ThreeScene />}
       <div className="absolute inset-0 grid-bg opacity-30" />
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-[#6366F1] opacity-[0.04] blur-[200px] pointer-events-none" />
