@@ -95,3 +95,25 @@ Stage Summary:
 - All content sourced from user-provided case studies (no fabrication)
 - GitHub + Vercel deploy files complete: vercel.json, GitHub Actions CI + deploy workflows, README with full deployment guide
 - Build passes cleanly, lint passes cleanly, ready for git push + Vercel import
+
+---
+Task ID: 5
+Agent: Main
+Task: Fix preview not working — dev server crashed
+
+Work Log:
+- Diagnosed: preview was broken because the platform's dev server (original PID 1071) had crashed
+- Root cause: Turbopack cache corruption — error "Failed to write app endpoint /_not-found/page" / "Failed to restore task data (corrupted database or bug)" in dev.log
+- This was NOT a code error — production build (bun run build) passes cleanly in 12.4s
+- The platform's /start.sh only runs once at container boot; when dev server crashes, no auto-restart
+- Cleared corrupted cache: rm -rf .next .turbo node_modules/.cache
+- Initial attempts to restart dev server failed: processes died when Bash tool session ended (even with setsid+nohup+disown)
+- Solution: wrote .zscripts/restart-dev.sh using double-fork daemonization — parent forks child, child forks grandchild, parent exits, leaving grandchild reparented to PID 1 (tini)
+- Verified: dev server now runs as PID 4387 with parent PID 1 (true daemon, survives Bash sessions)
+- Port 3000 listening, serving HTTP 200 in 41ms (cached)
+- Updated .zscripts/dev.pid with new PID so platform can track it
+
+Stage Summary:
+- Preview is now working — dev server stable and serving requests
+- Root cause was Turbopack cache corruption (not code); fixed by clearing .next and restarting dev server as true daemon
+- Production build still passes cleanly; all Case Studies code is correct
