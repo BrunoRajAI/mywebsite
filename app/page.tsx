@@ -9,6 +9,7 @@ import Navigation from "@/components/portfolio/Navigation";
 import Hero from "@/components/portfolio/Hero";
 import About from "@/components/portfolio/About";
 import Experience from "@/components/portfolio/Experience";
+import CaseStudies from "@/components/portfolio/CaseStudies";
 import Skills from "@/components/portfolio/Skills";
 import Stats from "@/components/portfolio/Stats";
 import Education from "@/components/portfolio/Education";
@@ -49,6 +50,7 @@ export default function Home() {
             <div className="sweep-line absolute left-0 right-0 h-px origin-left" style={{ background: "linear-gradient(90deg, transparent, rgba(99,102,241,0.12), transparent)" }} />
             <About />
             <Experience />
+            <CaseStudies />
             <Stats />
             <Skills />
             <Education />

@@ -53,6 +53,7 @@ bun run start
 │   │   │   ├── Hero.tsx      # Hero section with 3D photo card
 │   │   │   ├── About.tsx     # About with avatar + expertise
 │   │   │   ├── Experience.tsx
+│   │   │   ├── CaseStudies.tsx # 3 detailed case studies (GBP automation, AEO/GEO, Domain Authority)
 │   │   │   ├── Skills.tsx
 │   │   │   ├── Stats.tsx
 │   │   │   ├── Education.tsx

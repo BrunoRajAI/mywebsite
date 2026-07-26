@@ -27,6 +27,19 @@ export interface Tool {
   proficiency?: "expert" | "advanced" | "proficient";
 }
 
+export interface CaseStudy {
+  id: string;
+  index: number;
+  title: string;
+  company: string;
+  category: string;
+  tags: string[];
+  problem: string;
+  action: string;
+  results: { metric: string; label: string; description: string }[];
+  icon: "automation" | "ai-search" | "authority";
+}
+
 export interface ResumeData {
   name: string;
   initials: string;
@@ -53,6 +66,8 @@ export interface ResumeData {
     metric?: string;
     category: string;
   }[];
+
+  caseStudies: CaseStudy[];
 
   experience: ExperienceRole[];
 
@@ -170,6 +185,99 @@ export const resumeData: ResumeData = {
       text: "Increased AI-search-driven traffic by 67% and improved AI search visibility by 45% through schema implementation, entity optimization, and AI-search-focused SEO initiatives.",
       metric: "67%",
       category: "AI Search",
+    },
+  ],
+
+  caseStudies: [
+    {
+      id: "gbp-automation-starberry",
+      index: 1,
+      title: "GBP Automation",
+      company: "Starberry",
+      category: "Marketing Automation",
+      tags: ["n8n", "Google Business Profile", "DataForSEO", "Workflow Automation"],
+      problem:
+        "Manual Google Business Profile updates were consuming hours every week across multiple estate agency listings. The repetitive posting and update workflow was eating into the team's bandwidth for strategic SEO work, creating a chronic bottleneck that did not scale as new branches were onboarded.",
+      action:
+        "Built an end-to-end n8n automation workflow that handled GBP posting and updates across all listings from a single source of truth. The workflow integrated DataForSEO for live keyword and SERP tracking, so posts could be scheduled, optimized, and published based on actual search demand rather than guesswork. Reusable trigger nodes let the marketing team launch a batch of location-aware updates in minutes instead of hours.",
+      results: [
+        {
+          metric: "68%",
+          label: "GBP Time Reduced",
+          description: "Cut weekly Google Business Profile management time by two-thirds, freeing the team to focus on higher-value SEO initiatives.",
+        },
+        {
+          metric: "100%",
+          label: "Posting Automated",
+          description: "Replaced manual cross-listing updates with a single workflow that pushes to every GBP listing at once.",
+        },
+        {
+          metric: "1→N",
+          label: "Scalable Workflow",
+          description: "Single n8n workflow scales from 1 to N branches with no additional manual effort per listing.",
+        },
+      ],
+      icon: "automation",
+    },
+    {
+      id: "aeo-geo-starberry",
+      index: 2,
+      title: "AEO & GEO Visibility",
+      company: "Starberry",
+      category: "AI Search Optimization",
+      tags: ["AEO", "GEO", "Schema Markup", "Entity Optimization", "AI Search"],
+      problem:
+        "Traffic was Google-only. There was zero presence in AI search answers like ChatGPT and Perplexity, meaning the brand was invisible to a fast-growing channel of high-intent users who never clicked a blue link. As AI search adoption accelerated, this gap translated directly into missed valuation and enquiry opportunities.",
+      action:
+        "Rebuilt the content architecture around AI search engines rather than classic blue links. Deployed comprehensive schema markup, entity optimization, and structured data designed to be machine-readable by ChatGPT, Perplexity, and other answer engines. Re-authored key landing pages to answer questions directly, aligned internal linking around entities rather than keywords, and submitted structured feeds to maximize the chance of being cited inside AI-generated answers.",
+      results: [
+        {
+          metric: "67%",
+          label: "AI Search Traffic Growth",
+          description: "AI-search-driven traffic grew 67% after the schema and entity optimization push.",
+        },
+        {
+          metric: "45%",
+          label: "AI Search Visibility",
+          description: "Improved AI search visibility by 45% across ChatGPT, Perplexity, and other answer engines.",
+        },
+        {
+          metric: "49%",
+          label: "Valuation Leads Increase",
+          description: "Valuation leads rose 49% off the back of the new AI search visibility, directly tying the work to revenue.",
+        },
+      ],
+      icon: "ai-search",
+    },
+    {
+      id: "domain-authority-deckzi",
+      index: 3,
+      title: "Domain Authority & Organic Growth",
+      company: "Deckzi",
+      category: "Organic SEO Growth",
+      tags: ["Link Building", "Content Optimization", "Social Growth", "Domain Authority"],
+      problem:
+        "A low-authority site starting at DA 9 with almost no organic visibility or social presence. The brand was invisible in search, had no keyword rankings of consequence, and a social following of zero — making it nearly impossible to compete with established players in the niche.",
+      action:
+        "Ran a sustained, multi-quarter link-building and content optimization push. Acquired high-quality backlinks through outreach and partnerships, paired with consistent content optimization targeting commercially valuable keywords. Ran a parallel social posting cadence to build audience and brand signals, ensuring every piece of content had distribution behind it rather than sitting orphaned on the blog.",
+      results: [
+        {
+          metric: "9→35",
+          label: "Domain Authority Growth",
+          description: "Domain Authority climbed from 9 to 35 — a 4x improvement that unlocked real organic visibility.",
+        },
+        {
+          metric: "Top 10",
+          label: "Multiple Keywords Ranked",
+          description: "Multiple target keywords entered Google's Top 10, driving consistent organic traffic.",
+        },
+        {
+          metric: "1K+",
+          label: "Social Following Built",
+          description: "Grew the social media audience from 0 to 1,000+ followers through consistent content and engagement.",
+        },
+      ],
+      icon: "authority",
     },
   ],
 

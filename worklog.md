@@ -71,3 +71,27 @@ Stage Summary:
 - All component imports via @/ alias remain functional
 - Photo (public/profile.png) already prominently displayed in Hero + About sections
 - Production build passes cleanly, ready for platform deployment
+
+---
+Task ID: 4
+Agent: Main
+Task: Add Case Studies section + ensure GitHub/Vercel deploy files ready
+
+Work Log:
+- Added `CaseStudy` interface to resume-data.ts (id, index, title, company, category, tags, problem, action, results[], icon)
+- Added 3 case studies (GBP Automation, AEO/GEO Visibility, Domain Authority & Organic Growth) with rich Problem/Action/Results content
+- Created CaseStudies.tsx component: TiltCard-based cards with index badge, icon, company badge, category tags, expandable Action section, 3-column Results strip with metrics, bottom callout CTA
+- Added CaseStudies to page.tsx (between Experience and Stats)
+- Added "Case Studies" link to Navigation
+- Verified build: ✓ Compiled successfully in 12.4s, 4 routes generated
+- Verified lint: 0 errors, 0 warnings
+- Created deploy-ready files: vercel.json, .nvmrc, .node-version, .env.example, .github/workflows/{ci,deploy}.yml, README.md, LICENSE
+- Cleaned git tracking: removed .env, db/, upload/, download/, .zscripts/, Caddyfile, examples/, mini-services/ from index
+- Updated .gitignore for platform-specific files
+- 93 files tracked — clean deployable set
+
+Stage Summary:
+- New Case Studies section live with 3 detailed case studies (68% GBP time reduction, 67% AI search traffic, 9→35 DA growth)
+- All content sourced from user-provided case studies (no fabrication)
+- GitHub + Vercel deploy files complete: vercel.json, GitHub Actions CI + deploy workflows, README with full deployment guide
+- Build passes cleanly, lint passes cleanly, ready for git push + Vercel import

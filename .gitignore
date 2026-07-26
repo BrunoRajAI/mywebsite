@@ -75,3 +75,11 @@ Thumbs.db
 
 # Build artifacts (extra)
 standalone/
+
+# Platform-specific / dev-only
+.zscripts/
+Caddyfile
+examples/
+mini-services/
+.z-ai-config/
+.claude/
