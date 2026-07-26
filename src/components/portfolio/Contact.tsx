@@ -8,10 +8,18 @@ import {
   useTransform,
 } from "framer-motion";
 import { useRef } from "react";
-import { Mail, Phone, MapPin, Linkedin, ArrowUpRight } from "lucide-react";
+import { Mail, Phone, MapPin, Linkedin, ArrowUpRight, Calendar } from "lucide-react";
 import { resumeData } from "@/lib/resume-data";
 
 const contactItems = [
+  {
+    icon: Calendar,
+    label: "Book a Meeting",
+    value: "30-min intro call via Calendly",
+    href: resumeData.calendly,
+    external: true,
+    description: "Pick a time that works for you — powered by Calendly",
+  },
   {
     icon: Mail,
     label: "Email",
@@ -206,6 +214,68 @@ export default function Contact() {
             Interested in digital marketing, SEO, or marketing automation?
             I&apos;m experienced in building AI-powered systems that drive real, measurable growth. Let&apos;s discuss how I can help.
           </motion.p>
+        </motion.div>
+
+        {/* ─── Featured Book a Meeting CTA ─── */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
+          className="mb-12 max-w-2xl mx-auto"
+        >
+          <a
+            href={resumeData.calendly}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group relative block w-full overflow-hidden rounded-2xl glass-strong border border-[#6366F1]/30 hover:border-[#6366F1]/60 transition-all duration-500 p-6 md:p-8"
+            data-cursor-hover
+          >
+            {/* Glow background */}
+            <div className="absolute inset-0 opacity-30 group-hover:opacity-60 transition-opacity duration-700 pointer-events-none" style={{ background: "radial-gradient(circle at 30% 50%, rgba(99,102,241,0.18), transparent 60%)" }} />
+
+            {/* Animated border */}
+            <motion.div
+              initial={{ scaleX: 0 }}
+              animate={isInView ? { scaleX: 1 } : {}}
+              transition={{ delay: 0.4, duration: 0.8 }}
+              className="absolute bottom-0 left-0 right-0 h-px origin-left"
+              style={{ background: "linear-gradient(90deg, rgba(99,102,241,0.6), transparent)" }}
+            />
+
+            <div className="relative z-10 flex items-center gap-5">
+              {/* Calendar icon block */}
+              <motion.div
+                whileHover={{ rotate: [0, -6, 6, 0], scale: 1.08 }}
+                transition={{ duration: 0.5 }}
+                className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-gradient-to-br from-[#6366F1] to-[#818CF8] flex items-center justify-center shrink-0 shadow-[0_0_30px_rgba(99,102,241,0.3)]"
+              >
+                <Calendar size={26} className="text-white" />
+              </motion.div>
+
+              {/* Text */}
+              <div className="flex-1 min-w-0 text-left">
+                <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#818CF8] mb-1">
+                  Schedule a Call
+                </p>
+                <h3 className="text-lg md:text-xl font-semibold text-white mb-1">
+                  Book a 30-minute meeting
+                </h3>
+                <p className="text-sm text-white/40 leading-relaxed">
+                  Free intro call — SEO, marketing automation, AI workflows, or collaboration opportunities.
+                </p>
+              </div>
+
+              {/* Arrow */}
+              <motion.div
+                whileHover={{ x: 3, y: -3 }}
+                className="shrink-0 hidden sm:block"
+              >
+                <div className="w-10 h-10 rounded-full border border-white/10 group-hover:border-[#818CF8]/50 group-hover:bg-[#6366F1]/10 flex items-center justify-center transition-all duration-300">
+                  <ArrowUpRight size={18} className="text-white/40 group-hover:text-[#818CF8] transition-colors duration-300" />
+                </div>
+              </motion.div>
+            </div>
+          </a>
         </motion.div>
 
         {/* Contact Grid */}

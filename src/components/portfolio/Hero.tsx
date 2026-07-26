@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef, useCallback } from "react";
 import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from "framer-motion";
-import { Mail, Linkedin, Sparkles, ArrowDown, Calendar } from "lucide-react";
+import { Mail, Sparkles, Calendar } from "lucide-react";
 import dynamic from "next/dynamic";
 import { resumeData } from "@/lib/resume-data";
 
@@ -135,17 +135,22 @@ export default function Hero() {
               transition={{ duration: 0.8, delay: 1 }}
               className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-12"
             >
+              <MagneticButton>
+                <a
+                  href={resumeData.calendly}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2.5 px-7 py-3 bg-[#6366F1] hover:bg-[#818CF8] text-white font-medium text-sm rounded-full transition-all duration-300 hover:shadow-[0_0_30px_rgba(99,102,241,0.3)] hover:shadow-[0_0_60px_rgba(99,102,241,0.15)]"
+                >
+                  <Calendar size={15} />
+                  Book a Meeting
+                </a>
+              </MagneticButton>
               <MagneticButton onClick={() => scrollTo("contact")}>
-                <span className="inline-flex items-center gap-2.5 px-7 py-3 bg-[#6366F1] hover:bg-[#818CF8] text-white font-medium text-sm rounded-full transition-all duration-300 hover:shadow-[0_0_30px_rgba(99,102,241,0.3)] hover:shadow-[0_0_60px_rgba(99,102,241,0.15)]">
+                <span className="inline-flex items-center gap-2 px-7 py-3 border border-white/[0.08] text-white/50 hover:text-white hover:border-white/[0.15] text-sm rounded-full transition-all duration-300 hover:bg-white/[0.02]">
                   <Mail size={15} />
                   Get in Touch
                 </span>
-              </MagneticButton>
-              <MagneticButton>
-                <a href={resumeData.linkedin} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-7 py-3 border border-white/[0.08] text-white/50 hover:text-white hover:border-white/[0.15] text-sm rounded-full transition-all duration-300 hover:bg-white/[0.02]">
-                  <Linkedin size={15} />
-                  LinkedIn
-                </a>
               </MagneticButton>
             </motion.div>
           </div>
