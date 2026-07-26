@@ -50,5 +50,28 @@ test
 prompt
 
 server.log
+
 # Skills directory
 /skills/
+
+# Local dev artifacts
+/upload/
+/download/
+/db/
+*.db
+*.db-journal
+
+# IDE / editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+Thumbs.db
+
+# Vercel local
+.vercel/
+
+# Build artifacts (extra)
+standalone/
