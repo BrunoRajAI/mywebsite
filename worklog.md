@@ -51,3 +51,23 @@ Stage Summary:
 - 6 files created/updated with richer data, 10 components upgraded
 - Build: 0 errors, 0 lint warnings, 200 HTTP
 ---
+
+---
+Task ID: 3
+Agent: Main
+Task: Fix platform build error "Couldn't find any pages or app directory"
+
+Work Log:
+- Diagnosed: local build worked but hosting platform build failed with "Couldn't find any pages or app directory"
+- Root cause: platform's build environment did not recognize the src/app structure
+- Moved src/app/ → root app/ (layout.tsx, page.tsx, globals.css, api/route.ts)
+- Updated components.json: tailwind.css path src/app/globals.css → app/globals.css
+- Verified @/ path alias still resolves to ./src/* (components/libs/hooks unaffected)
+- Verified profile.png (1254x1254 PNG) is already integrated in Hero (large 3D tilt card) and About (small avatar)
+- Ran clean build: ✓ Compiled successfully in 11.4s, all 4 routes generated
+
+Stage Summary:
+- Build error fixed by moving app/ to project root (universally recognized Next.js structure)
+- All component imports via @/ alias remain functional
+- Photo (public/profile.png) already prominently displayed in Hero + About sections
+- Production build passes cleanly, ready for platform deployment
