@@ -50,6 +50,7 @@ export interface ResumeData {
   phone: string;
   email: string;
   linkedin: string;
+  calendly: string;
 
   professionalSummary: string;
   professionalSummaryExtended: string;
@@ -110,6 +111,7 @@ export const resumeData: ResumeData = {
   phone: "+91-8870142873",
   email: "brunoel1998@gmail.com",
   linkedin: "https://linkedin.com/in/bruno-lionel-raj",
+  calendly: "https://calendly.com/brunolionelraj/30min",
 
   professionalSummary:
     "Digital Marketing & Marketing Automation Specialist with 6+ years of experience in Local SEO, Technical SEO, AEO, GEO, Email Marketing, Lead Generation, and AI-powered automation.",

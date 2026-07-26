@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef, useCallback } from "react";
 import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from "framer-motion";
-import { Mail, Linkedin, Sparkles, ArrowDown } from "lucide-react";
+import { Mail, Linkedin, Sparkles, ArrowDown, Calendar } from "lucide-react";
 import dynamic from "next/dynamic";
 import { resumeData } from "@/lib/resume-data";
 
