@@ -65,12 +65,12 @@ export default function Hero() {
             </motion.div>
 
             {/* Name */}
-            <div className="overflow-hidden mb-2">
+            <div className="overflow-hidden mb-3">
               <motion.h1
                 initial={{ y: "110%" }}
                 animate={{ y: "0%" }}
                 transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
-                className="text-[clamp(2.8rem,8vw,6rem)] font-bold tracking-[-0.04em] leading-[0.95] text-white"
+                className="text-[clamp(2.5rem,7vw,6rem)] font-bold tracking-[-0.04em] leading-[1.05] text-white"
               >
                 {firstName}
               </motion.h1>
@@ -80,7 +80,7 @@ export default function Hero() {
                 initial={{ y: "110%" }}
                 animate={{ y: "0%" }}
                 transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1], delay: 0.35 }}
-                className="text-[clamp(2.8rem,8vw,6rem)] font-bold tracking-[-0.04em] leading-[0.95] text-accent-gradient"
+                className="text-[clamp(2.5rem,7vw,6rem)] font-bold tracking-[-0.04em] leading-[1.05] text-accent-gradient"
               >
                 {lastName}
               </motion.h1>
