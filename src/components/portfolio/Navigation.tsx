@@ -66,7 +66,7 @@ export default function Navigation() {
         transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
         className="fixed top-5 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none"
       >
-        <div className={`max-w-md w-full flex items-center justify-between rounded-full px-2 py-1.5 transition-all duration-500 pointer-events-auto ${
+        <div className={`max-w-sm w-full flex items-center justify-between rounded-full px-2 py-1.5 transition-all duration-500 pointer-events-auto ${
           isScrolled
             ? "bg-[rgba(9,9,9,0.75)] backdrop-blur-2xl border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.4)]"
             : "bg-transparent border border-transparent"

@@ -35,7 +35,7 @@ export default function Hero() {
   const lastName = resumeData.name.split(" ").slice(1).join(" ");
 
   return (
-    <section id="hero-section" ref={containerRef} className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#090909]">
+    <section id="hero-section" ref={containerRef} className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#090909] pt-24 pb-12">
       {mounted && <ThreeScene />}
       <div className="absolute inset-0 grid-bg opacity-30" />
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-[#6366F1] opacity-[0.04] blur-[200px] pointer-events-none" />
@@ -70,7 +70,7 @@ export default function Hero() {
                 initial={{ y: "110%" }}
                 animate={{ y: "0%" }}
                 transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
-                className="text-[clamp(2.5rem,7vw,6rem)] font-bold tracking-[-0.04em] leading-[1.15] text-white"
+                className="text-[clamp(2.2rem,6vw,5.5rem)] font-bold tracking-[-0.04em] leading-[1.1] text-white"
               >
                 {firstName}
               </motion.h1>
@@ -80,7 +80,7 @@ export default function Hero() {
                 initial={{ y: "110%" }}
                 animate={{ y: "0%" }}
                 transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1], delay: 0.35 }}
-                className="text-[clamp(2.5rem,7vw,6rem)] font-bold tracking-[-0.04em] leading-[1.15] text-accent-gradient"
+                className="text-[clamp(2.2rem,6vw,5.5rem)] font-bold tracking-[-0.04em] leading-[1.1] text-accent-gradient"
               >
                 {lastName}
               </motion.h1>
