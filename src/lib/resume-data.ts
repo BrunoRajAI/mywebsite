@@ -109,7 +109,7 @@ export const resumeData: ResumeData = {
   titleShort: "Marketing Automation Specialist",
   location: "Coimbatore, India",
   phone: "+91-8870142873",
-  email: "brunoel1998@gmail.com",
+  email: "brunolionelraj@gmail.com",
   linkedin: "https://linkedin.com/in/bruno-lionel-raj",
   calendly: "https://calendly.com/brunolionelraj/30min",
 
