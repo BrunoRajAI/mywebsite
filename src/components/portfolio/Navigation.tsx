@@ -101,8 +101,8 @@ export default function Navigation() {
           {/* ─── Subtle vertical divider — premium separation between brand & nav ─── */}
           <div className="hidden md:block w-px h-6 bg-white/[0.08] flex-shrink-0" />
 
-          {/* ─── DESKTOP NAV: gap-4 tablet, gap-8 desktop ─── */}
-          <div className="hidden md:flex items-center gap-4 lg:gap-8">
+          {/* ─── DESKTOP NAV: gap-4 tablet, gap-6 desktop, gap-7 large desktop ─── */}
+          <div className="hidden md:flex items-center gap-4 lg:gap-6 xl:gap-7">
             {navLinks.map((link) => {
               const active = activeSection === link.href.replace("#", "");
               return (
